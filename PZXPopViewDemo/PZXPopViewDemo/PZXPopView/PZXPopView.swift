@@ -111,7 +111,7 @@ class PZXPopView: UIView {
         let path = UIBezierPath()
         path.move(to: CGPoint(x: 0, y: arrowHeight))
         path.addLine(to: CGPoint(x: arrowWidth, y: arrowHeight))
-        path.addLine(to: CGPoint(x: 10, y: 0))
+        path.addLine(to: CGPoint(x: arrowWidth/2, y: 0))
         path.close()
 
         let shapeLayer = CAShapeLayer()
