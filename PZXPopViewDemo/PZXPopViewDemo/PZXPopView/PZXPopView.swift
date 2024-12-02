@@ -20,6 +20,9 @@ class PZXPopView: UIView {
     private let tableView = UITableView()
     private var didSelectItem: ((Int) -> Void)?
     
+    
+    var offsetX: CGFloat = 0.0 // 新增偏移量属性，默认为 0
+
     var alertBackgroundColor: UIColor?
     var textColor: UIColor?
 
@@ -63,9 +66,6 @@ class PZXPopView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        // 设置箭头和表格布局
-        arrowView.frame = CGRect(x: (contentWidth - 20) / 2, y: 0, width: 20, height: arrowHeight)
-        arrowView.layer.mask = arrowMaskLayer()
 
         let tableHeight = CGFloat(items.count) * rowHeight
         tableView.frame = CGRect(x: 0, y: arrowHeight, width: contentWidth, height: tableHeight)
@@ -83,16 +83,45 @@ class PZXPopView: UIView {
         return shapeLayer
     }
 
-    func show(from button: UIButton) {
+    func show(from button: UIButton, isWindow: Bool = false) {
         guard let superview = button.superview else { return }
-        superview.addSubview(self)
 
-        let buttonFrame = button.convert(button.bounds, to: superview)
+        let targetSuperview: UIView
+        if isWindow {
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
+                targetSuperview = keyWindow
+            } else {
+                targetSuperview = superview
+            }
+        } else {
+            targetSuperview = superview
+        }
+
+        targetSuperview.addSubview(self)
+
+        let buttonFrame = button.convert(button.bounds, to: targetSuperview)
         let originY = buttonFrame.maxY + 5
-        let originX = buttonFrame.midX - contentWidth / 2
+
+        // 计算弹窗的X坐标，应用偏移量
+        var originX = buttonFrame.midX - contentWidth / 2 + offsetX
+
+        // 确保弹窗不会超出屏幕
+        let screenWidth = UIScreen.main.bounds.width
+        if originX < 0 { originX = 0 }
+        if originX + contentWidth > screenWidth {
+            originX = screenWidth - contentWidth
+        }
 
         self.frame = CGRect(x: originX, y: originY, width: contentWidth, height: CGFloat(items.count) * rowHeight + arrowHeight)
+
+        // 动态设置箭头的位置
+        let arrowCenterX = buttonFrame.midX - originX // 箭头相对于弹窗的位置
+        arrowView.frame = CGRect(x: arrowCenterX - 10, y: 0, width: 20, height: arrowHeight) // 20是箭头宽度的一半
+        arrowView.layer.mask = arrowMaskLayer() // 更新箭头的形状
     }
+
+
 
     func hide() {
         self.removeFromSuperview()

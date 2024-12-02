@@ -41,6 +41,8 @@ class ViewController: UIViewController {
     }
 
     @objc private func showPopView() {
+        
+        popView?.offsetX = -50
         popView?.show(from: popButton)
 
     }
