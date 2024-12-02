@@ -38,7 +38,8 @@ class ViewController: UIViewController {
          popView = PZXPopView(items: items) { index in
             print("选择了第 \(index) 项")
         }
-        popView?.contentWidth = 140 
+        popView?.contentWidth = 140
+        popView?.isShowMaskView = true
     }
 
     @objc private func showPopView() {
