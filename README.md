@@ -44,4 +44,7 @@ class ViewController: UIViewController {
     }
 }
 ```
+## 示例样式
 ![19081733107364_ pic](https://github.com/user-attachments/assets/972e6f4e-928b-4fcc-8f48-0a325a3758c4)
+
+#### 样式可完全自定义 修改 PZXPopViewCell 即可
