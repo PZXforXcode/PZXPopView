@@ -106,7 +106,9 @@ class PZXPopView: UIView {
 
     // 遮罩层点击事件
     @objc private func maskViewTapped() {
-        hide()
+//        hide()
+        hide(animate: true)
+
     }
 
     // 显示弹窗
@@ -174,11 +176,30 @@ class PZXPopView: UIView {
         updateArrowPosition()
     }
 
-    
-    func hide() {
-        self.removeFromSuperview()
-        popMaskView?.removeFromSuperview() // 隐藏遮罩层
+    func hide(animate: Bool = false) {
+        if animate {
+            // 使用动画来隐藏弹窗和遮罩层
+            UIView.animate(withDuration: 0.3, animations: {
+                self.alpha = 0.0
+                self.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+            }) { _ in
+                self.removeFromSuperview()
+                self.popMaskView?.removeFromSuperview() // 移除遮罩层
+                // 恢复初始状态
+                self.alpha = 1.0
+                self.transform = .identity
+            }
+        } else {
+            // 无动画，直接移除弹窗和遮罩层
+            self.removeFromSuperview()
+            popMaskView?.removeFromSuperview()
+            // 无动画时也确保恢复初始状态
+            self.alpha = 1.0
+            self.transform = .identity
+        }
     }
+
+
 }
 
 extension PZXPopView: UITableViewDelegate, UITableViewDataSource {
@@ -205,6 +226,6 @@ extension PZXPopView: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         didSelectItem?(indexPath.row)
-        hide()
+        hide(animate: true)
     }
 }
