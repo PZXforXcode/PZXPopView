@@ -176,28 +176,55 @@ class PZXPopView: UIView {
         updateArrowPosition()
     }
 
+    
     func hide(animate: Bool = false) {
         if animate {
-            // 使用动画来隐藏弹窗和遮罩层
-            UIView.animate(withDuration: 0.3, animations: {
+            // 记录原始的frame
+            let tempFrame = self.frame
+            
+            // 计算动态锚点位置
+            let anchorX = calculateAnchorPointX(from: offsetX)
+            
+            // 设置锚点为动态计算值
+            self.layer.anchorPoint = CGPoint(x: anchorX, y: 0)
+            
+            // 恢复原始的frame
+            self.frame = tempFrame
+            
+            // 使用动画将视图缩小到右上角并隐藏
+            UIView.animate(withDuration: 0.2, animations: {
                 self.alpha = 0.0
-                self.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+                self.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
             }) { _ in
+                // 动画结束后移除视图和遮罩层
                 self.removeFromSuperview()
-                self.popMaskView?.removeFromSuperview() // 移除遮罩层
-                // 恢复初始状态
+                self.popMaskView?.removeFromSuperview()
+
+                // 恢复视图的初始状态
                 self.alpha = 1.0
                 self.transform = .identity
+                self.layer.anchorPoint = CGPoint(x: 0.5, y: 0.5) // 恢复锚点为默认中心
             }
         } else {
-            // 无动画，直接移除弹窗和遮罩层
+            // 无动画，直接移除视图和遮罩层
             self.removeFromSuperview()
-            popMaskView?.removeFromSuperview()
-            // 无动画时也确保恢复初始状态
+            self.popMaskView?.removeFromSuperview()
             self.alpha = 1.0
-            self.transform = .identity
         }
     }
+
+    func calculateAnchorPointX(from offsetX: CGFloat) -> CGFloat {
+        // 计算合适的锚点X值
+        let maxOffsetX = (contentWidth / 2) - (arrowWidth / 2) - radius
+        let normalizedOffsetX = min(max(-maxOffsetX, offsetX), maxOffsetX) // 限制 offsetX 范围
+
+        // 当offsetX为负时，锚点应该往右
+        // 当offsetX为正时，锚点应该往左
+        let anchorX = 0.5 - (normalizedOffsetX / contentWidth)
+        
+        return anchorX
+    }
+
 
 
 }
