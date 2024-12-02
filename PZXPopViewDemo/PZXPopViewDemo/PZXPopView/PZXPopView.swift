@@ -98,7 +98,7 @@ class PZXPopView: UIView {
     private func updateArrowPosition() {
         let arrowCenterX = contentWidth / 2 - offsetX // 箭头的中心X位置根据偏移量调整
         arrowView.frame = CGRect(
-            x: arrowCenterX - 10,
+            x: arrowCenterX - arrowWidth/2,
             y: 0,
             width: arrowWidth,
             height: arrowHeight
