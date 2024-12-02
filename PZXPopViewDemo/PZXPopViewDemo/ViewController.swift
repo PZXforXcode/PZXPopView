@@ -25,7 +25,7 @@ class ViewController: UIViewController {
         view.backgroundColor = .cyan
 
         // 配置按钮
-        popButton.frame = CGRect(x: view.frame.width - 160, y: 100, width: 60, height: 40)
+        popButton.frame = CGRect(x: view.frame.width - 80, y: 100, width: 60, height: 40)
         popButton.addTarget(self, action: #selector(showPopView), for: .touchUpInside)
         view.addSubview(popButton)
         
@@ -43,7 +43,7 @@ class ViewController: UIViewController {
 
     @objc private func showPopView() {
         
-        popView?.offsetX = 100
+//        popView?.offsetX = 100
         popView?.show(from: popButton)
 
     }
