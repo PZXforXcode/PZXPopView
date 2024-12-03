@@ -21,7 +21,11 @@ class PZXPopView: UIView {
     var arrowHeight: CGFloat = 10.0
     var rowHeight: CGFloat = 50.0
     var contentWidth: CGFloat = 200.0
-    var alertBackgroundColor: UIColor?
+    var alertBackgroundColor: UIColor? {
+        didSet {
+            arrowView.backgroundColor = alertBackgroundColor
+        }
+    }
     var textColor: UIColor?
     var popMaskViewBackgroundColor = UIColor.black.withAlphaComponent(0.5)
     
